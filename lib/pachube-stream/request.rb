@@ -20,7 +20,7 @@ module PachubeStream
     end
     
     def on_datastream(&block)
-      @on_data_stream_block = block
+      @on_datastream_block = block
     end
     
     def to_json
