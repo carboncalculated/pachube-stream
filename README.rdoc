@@ -1,0 +1,22 @@
+== PachubeStream
+
+PachubeStream gives you an API for the Pachube TCP Stream using EventMachine
+
+http://api.pachube.com/v2/beta/#tcp-socket-and-websocket-connections
+
+== Warning
+  
+  Smash and Grab! This is not ready for any use! No Specs etc; Just concept phase; and did not want
+  to pay for github private repo :)
+  
+  However example does work
+
+== Quickstart
+  
+  Have a look at the example
+
+=== Defaults:
+
+    host                       # => beta.pachube.com
+    port                       # => 8081
+    
