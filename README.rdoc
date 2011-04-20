@@ -4,18 +4,101 @@ PachubeStream gives you an API for the Pachube TCP Stream using EventMachine
 
 http://api.pachube.com/v2/beta/#tcp-socket-and-websocket-connections
 
-== Warning
-  
-  Smash and Grab! This is not ready for any use! No Specs etc; Just concept phase; and did not want
-  to pay for github private repo :)
-  
-  However example does work
-
 == Quickstart
   
-  Have a look at the example
+  require "pachube-stream"
+  connection = PachubeStream::Connection.connect(:api_key => ENV["PACHUBE_API_KEY"])
+  
+  Look at the examples directory for exactly that!
+  
+== Connection Methods
 
-=== Defaults:
+The methods on the connection are what Pachube look for when making a request; this in-turn will 
+generate the correct method value in the 'http json'
+
+=== Example
+  connection = PachubeStream::Connection.connect(:api_key => ENV["PACHUBE_API_KEY"])
+  request = connection.subscribe("/feeds/504")
+  
+  Results In the following JSON request
+
+  {
+    "method" : "subscribe",
+    "resource" : "/feeds/504",
+    "headers" :
+      {
+        "X-PachubeApiKey" : "API_KEY"
+      },
+    "token" : "subscribe"
+  }
+  
+
+=== Subscribe
+  
+  connection = PachubeStream::Connection.connect(:api_key => ENV["PACHUBE_API_KEY"])
+  request = connection.subscribe("/feeds/504")
+  request.on_datastream do |response|
+    puts response
+  end
+
+=== Unsubscribe
+
+  connection = PachubeStream::Connection.connect(:api_key => ENV["PACHUBE_API_KEY"])
+  request = connection.unsubscribe("/feeds/504")
+  request.on_compelete do |response|
+    puts response
+  end
+
+=== Get
+
+  connection = PachubeStream::Connection.connect(:api_key => ENV["PACHUBE_API_KEY"])
+  request = connection.get("/feeds/504")
+  request.on_get do |response|
+    puts response
+  end
+
+=== Put
+
+  connection = PachubeStream::Connection.connect(:api_key => ENV["PACHUBE_API_KEY"])
+  request = connection.put("/feeds/504")
+  request.on_complete do |response|
+    puts response
+  end
+  
+=== Delete
+
+  connection = PachubeStream::Connection.connect(:api_key => ENV["PACHUBE_API_KEY"])
+  request = connection.delete("/feeds/504")
+  request.on_complete do |response|
+    puts response
+  end
+
+=== Post
+
+  connection = PachubeStream::Connection.connect(:api_key => ENV["PACHUBE_API_KEY"])
+  request = connection.post("/feeds/504")
+  request.on_complete do |response|
+    puts response
+  end
+
+
+The way we make a request is to send json in the format of a HTTP request; you only have
+to give extra options when you want to provide your own headers, params and body etc;
+
+Therefore when using the connection Methods
+
+When can create this 'http json request' with PachubeStream::HttpRequest passing in a hash
+  
+  connection = PachubeStream::Connection.connect(:api_key => ENV["PACHUBE_API_KEY"])
+  request = connection.put("/feeds/504", PachubeStream::HttpRequest.new(:body => {}, :params => {}, :headers => {}))
+  
+  request.on_complete do |response|
+    puts response
+  end
+
+== Defaults:
+
+When creating a connection you can specify the host and port these have defaults
 
     host                       # => beta.pachube.com
     port                       # => 8081

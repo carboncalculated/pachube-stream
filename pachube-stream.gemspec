@@ -4,7 +4,7 @@ require "pachube-stream/version"
 
 Gem::Specification.new do |s|
   s.name        = "pachube-stream"
-  s.version     = Pachube::Stream::VERSION
+  s.version     = PachubeStream::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Hookercookerman"]
   s.email       = ["hookercookerman@gmail.com"]

@@ -1,7 +1,7 @@
 module PachubeStream
   class Request
     
-    attr_accessor :on_complete_block, :on_datastream_block, :request, :token, :method
+    attr_accessor :on_complete_block, :on_datastream_block, :request, :token, :method, :on_error_block, :on_get_block
     
     # @param[String] method
     # @param[String] html this means headers and body and resource and params
@@ -21,6 +21,14 @@ module PachubeStream
     
     def on_datastream(&block)
       @on_datastream_block = block
+    end
+    
+    def on_error(&block)
+      @on_error_block = block
+    end
+    
+    def on_get(&block)
+      @on_get_block = block
     end
     
     def to_json

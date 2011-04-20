@@ -2,19 +2,14 @@ module PachubeStream
   class Connection < EventMachine::Connection
     include RequestMethods
     
-    # @todo taken from Twitter-Stream Need to Change for Pachube
     NF_RECONNECT_START = 0.25
     NF_RECONNECT_ADD   = 0.25
     NF_RECONNECT_MAX   = 16
-
-    AF_RECONNECT_START = 10
-    AF_RECONNECT_MUL   = 2
-
     RECONNECT_MAX   = 320
     RETRIES_MAX     = 10
     
-    attr_accessor :options, :on_init_callback, :api_key
-    attr_accessor :reconnect_callback, :max_reconnects_callback
+    attr_accessor :options, :on_init_callback, :api_key, :on_response_block, :on_error_block
+    attr_accessor :reconnect_callback, :max_reconnects_callback, :nf_last_reconnect, :reconnect_retries
     
     # @todo tidy as crap
     def self.connect(options = {})
@@ -34,6 +29,8 @@ module PachubeStream
       @options = options
       @api_key = options[:api_key]
       @timeout = options[:timeout] || 0
+      @reconnect_retries = 0
+      @immediate_reconnect = false
     end
     
     def client
@@ -49,8 +46,16 @@ module PachubeStream
       @reconnect_callback = block
     end
 
-    def on_max_reconnects &block
+    def on_max_reconnects(&block)
       @max_reconnects_callback = block
+    end
+    
+    def on_response_block(&block)
+      @on_response_block = block
+    end
+    
+    def on_error_block(&block)
+      @on_error_block = block
     end
 
     def stop
@@ -76,7 +81,7 @@ module PachubeStream
     def schedule_reconnect
       timeout = reconnect_timeout
       @reconnect_retries += 1
-      if timeout <= RECONNECT_MAX && @reconnect_retries <= RETRIES_MAX
+      if (timeout <= RECONNECT_MAX) && (@reconnect_retries <= RETRIES_MAX)
         reconnect_after(timeout)
       else
         @max_reconnects_callback.call(timeout, @reconnect_retries) if @max_reconnects_callback

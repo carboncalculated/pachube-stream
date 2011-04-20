@@ -1,0 +1,9 @@
+{
+    "headers":
+    {
+        "X-PachubeApiKey":"testing"
+    },
+    "method":"subscribe",
+    "resource":"/feeds/100",
+    "token":"token"
+}

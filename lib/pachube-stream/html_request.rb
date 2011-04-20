@@ -3,7 +3,6 @@ module PachubeStream
   
     property :resource
     property :method
-    property :token
     property :headers, :default => {}
     property :body
     property :params
