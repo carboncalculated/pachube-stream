@@ -103,3 +103,7 @@ When creating a connection you can specify the host and port these have defaults
     host                       # => beta.pachube.com
     port                       # => 8081
     
+
+== Respect
+
+Respect goes out to the twitter-stream Gem as one took some concepts form that; nice!
