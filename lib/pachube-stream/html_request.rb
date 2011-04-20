@@ -4,6 +4,7 @@ module PachubeStream
     property :resource
     property :method
     property :headers, :default => {}
+    property :token
     property :body
     property :params
   
