@@ -6,12 +6,12 @@ require '../lib/pachube-stream'
 EM.run do
   connection = PachubeStream::Connection.connect(:api_key => ENV["PACHUBE_API_KEY"])
   
-  connection.on_reconnect(timeout, reconnect_retries) do 
+  connection.on_reconnect do |timeout, reconnect_retries|
     puts timeout
     puts reconnect_retries
   end
   
-  connection.on_max_reconnects(timeout, reconnect_retries) do
+  connection.on_max_reconnects do |timeout, reconnect_retries|
     puts timeout
     puts reconnect_retries
   end
