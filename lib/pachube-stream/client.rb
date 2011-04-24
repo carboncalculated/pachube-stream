@@ -17,18 +17,18 @@ module PachubeStream
     # @todo refactor ugly as Sin
     def process_data(response)
       parsed_response = parse_response(response)
-      status_ok = parsed_response["status"] && parsed_response["status"] != 200
+      status_and_no_ok = parsed_response["status"] && parsed_response["status"] != 200
       if request = @requests[parsed_response["token"]]
-        if status_ok
-          call_block_for_request(request, parsed_response)
-        else
+        if status_and_no_ok
           call_error_for_request_block(request, parsed_response)
+        else
+          call_block_for_request(request, parsed_response)
         end
       else
-        if status_ok
-          @conn.on_response_block.call(parsed_response) if @conn.on_response_block 
-        else
+        if status_and_no_ok
           receive_error(parsed_response)
+        else
+          @conn.on_response_block.call(parsed_response) if @conn.on_response_block 
         end
       end
     end
@@ -62,13 +62,15 @@ module PachubeStream
     # finds the correct callback based on the token which
     # has the method call in its sig
     def call_block_for_request(request, parsed_response)
-      case request.token.gsub(/:.*/, "")
-      when "subscribe" && !parsed_response["body"].nil?
-        request.on_datastream_block.call(parsed_response) if request.on_datastream_block
-      when "get" && !parsed_response["body"].nil?
-        request.on_get_block.call(parsed_response) if request.on_get_block
-      else
+      if parsed_response["body"].nil?
         request.on_complete_block.call(parsed_response) if request.on_complete_block
+      else
+       case request.token.gsub(/:.*/, "")
+        when "subscribe"
+          request.on_datastream_block.call(parsed_response) if request.on_datastream_block
+        when "get"
+          request.on_get_block.call(parsed_response) if request.on_get_block
+        end
       end
     end
     
